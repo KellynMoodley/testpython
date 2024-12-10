@@ -1,0 +1,127 @@
+body {
+    font-family: 'Arial', sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+
+h1 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #495057;
+    margin-top: 30px;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#startButton {
+    background-color: #28a745;
+    color: white;
+}
+
+#startButton:hover {
+    background-color: #218838;
+}
+
+#stopButton {
+    background-color: #dc3545;
+    color: white;
+}
+
+#stopButton:hover {
+    background-color: #c82333;
+}
+
+#transcript, #finalTranscript, #lastReturnedAudio {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 20px;
+    min-height: 100px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#lastReturnedAudio {
+    background-color: #e9ecef;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+button#generatePDF {
+    background-color: #ffc107;
+    color: #343a40;
+}
+
+button#generatePDF:hover {
+    background-color: #e0a800;
+}
+
+button#closePopup {
+    background-color: #6c757d;
+    color: white;
+}
+
+button#closePopup:hover {
+    background-color: #5a6268;
+}
