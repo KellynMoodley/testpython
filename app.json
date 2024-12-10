@@ -1,0 +1,9 @@
+{
+  "name": "herokupython",
+  "description": "A Python app, which can easily be deployed to Heroku.",
+  "repository": "https://github.com/yourusername/your-repo-name",
+  "addons": [],
+  "scripts": {
+    "test": "python index.py test --debug-mode"
+  }
+}
