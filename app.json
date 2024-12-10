@@ -1,9 +1,7 @@
 {
-  "name": "herokupython",
-  "description": "A Python app, which can easily be deployed to Heroku.",
-  "repository": "https://github.com/KellynMoodley/testpython.git",
-  "addons": [],
-  "scripts": {
-    "test": "python index.py test --debug-mode"
-  }
+  "name": "hello-world-python-app",
+  "description": "A basic Hello World Python app deployed on Heroku.",
+  "repository": "https://github.com/your-repo/hello-world-python",
+  "keywords": ["python", "flask", "hello-world"],
+  "addons": []
 }
