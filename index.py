@@ -1,24 +1,28 @@
+import argparse
 import base64
+import configparser
 import json
 import threading
 import time
 import os
 import sys
-import requests
-import sounddevice as sd
-import numpy as np
+import requests  # Add this import
+
+import pyaudio
 import websocket
 from websocket._abnf import ABNF
-from flask import Flask, Response, jsonify, send_from_directory
+from flask import Flask, render_template, Response, jsonify, send_from_directory
 import queue
 import ssl
 
-app = Flask(__name__, static_folder='index.html')
+app = Flask(__name__, static_folder='static')
 
 CHUNK = 1024
+FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-DTYPE = 'int16'
+FINALS = []
+LAST = None
 
 # N8N Webhook URL
 N8N_WEBHOOK_URL = "https://kkarodia.app.n8n.cloud/webhook-test/eb567b24-6461-4e58-b761-746ccf6b52ea"
@@ -35,7 +39,6 @@ REGION_MAP = {
 transcription_queue = queue.Queue()
 final_transcript = []
 is_transcribing = False
-audio_queue = queue.Queue()
 
 def send_transcript_to_webhook(transcript):
     """
@@ -65,29 +68,21 @@ def send_transcript_to_webhook(transcript):
         print(f"Error sending transcript to webhook: {e}")
         return None
 
-def audio_callback(indata, frames, time, status):
-    """
-    Callback function for audio input using sounddevice
-    """
-    global is_transcribing
-    if status:
-        print(status)
-    
-    if is_transcribing:
-        # Convert numpy array to bytes
-        audio_data = indata.tobytes()
-        audio_queue.put(audio_data)
-
 def read_audio(ws):
-    global is_transcribing
+    global RATE, is_transcribing
+    p = pyaudio.PyAudio()
+    RATE = int(p.get_default_input_device_info()['defaultSampleRate'])
+    stream = p.open(format=FORMAT,
+                    channels=CHANNELS,
+                    rate=RATE,
+                    input=True,
+                    frames_per_buffer=CHUNK)
+
     print("* recording")
-    
     while is_transcribing:
         try:
-            # Get audio chunk from queue
-            if not audio_queue.empty():
-                data = audio_queue.get()
-                ws.send(data, ABNF.OPCODE_BINARY)
+            data = stream.read(CHUNK)
+            ws.send(data, ABNF.OPCODE_BINARY)
         except websocket.WebSocketConnectionClosedException:
             print("WebSocket connection closed unexpectedly")
             break
@@ -97,9 +92,9 @@ def read_audio(ws):
         except Exception as e:
             print(f"An error occurred while sending audio data: {e}")
             break
-        
-        time.sleep(0.1)  # Prevent tight loop
 
+    stream.stop_stream()
+    stream.close()
     print("* done recording")
 
     try:
@@ -113,6 +108,7 @@ def read_audio(ws):
         ws.close()
     except:
         print("Failed to close WebSocket")
+    p.terminate()
 
 def on_message(ws, msg):
     global final_transcript
@@ -136,16 +132,6 @@ def on_open(ws):
     global is_transcribing
     is_transcribing = True
     print("WebSocket opened")
-    
-    # Start audio stream
-    stream = sd.InputStream(
-        samplerate=RATE, 
-        channels=CHANNELS, 
-        dtype=DTYPE, 
-        callback=audio_callback
-    )
-    stream.start()
-    
     data = {
         "action": "start",
         "content-type": f"audio/l16;rate={RATE}",
