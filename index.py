@@ -15,7 +15,7 @@ from flask import Flask, render_template, Response, jsonify, send_from_directory
 import queue
 import ssl
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder='index.html')
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
