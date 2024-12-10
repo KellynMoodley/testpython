@@ -44,7 +44,7 @@ is_transcribing = False
 current_dir = os.getcwd()
 
 @app.route('/')
-def serve_index():
+def index():
     # Serve the main index.html file
     return send_from_directory(current_dir, 'index.html')
 
@@ -52,6 +52,7 @@ def serve_index():
 def serve_files(filename):
     # Serve other files (CSS, JS, etc.) dynamically
     return send_from_directory(current_dir, filename)
+
 
 def send_transcript_to_webhook(transcript):
     """
