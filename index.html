@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcription App</title>
+    <link rel="stylesheet" href="static/styles.css">
+    
+</head>
+<body>
+    <h1>Transcription App</h1>
+    <button id="startButton">Start Transcribing</button>
+    <button id="stopButton">Stop Transcribing</button>
+
+    <!-- <h2>Live Transcript:</h2>-->
+    <!--<div id="transcript"></div>-->
+
+    <h2>Last Returned Audio:</h2>
+    <div id="lastReturnedAudio"></div>
+
+    <h2>Final Transcript:</h2>
+    <div id="finalTranscript"></div>
+
+    <button onclick="generatePDF()">Generate PDF Report</button>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="loadingPopup">
+        <div class="spinner"></div>
+        <p>Generating PDF...</p>
+    </div>
+    <div class="popup" id="successPopup">
+        <p>PDF created</p>
+        <button onclick="closeSuccessPopup()">Close</button>
+    </div>
+
+    <script>
+       let eventSource;
+
+        document.getElementById('startButton').addEventListener('click', startTranscription);
+        document.getElementById('stopButton').addEventListener('click', stopTranscription);
+
+        function startTranscription() {
+            document.getElementById('lastReturnedAudio').innerHTML = '';
+            document.getElementById('finalTranscript').innerHTML = '';
+
+            eventSource = new EventSource('/start_transcription');
+
+            eventSource.onmessage = function(event) {
+                const transcript = event.data;
+                document.getElementById('lastReturnedAudio').textContent = transcript;
+            };
+
+            eventSource.onerror = function(event) {
+                console.error('EventSource failed:', event);
+                eventSource.close();
+            };
+        }
+
+        function stopTranscription() {
+            if (eventSource) {
+                eventSource.close();
+            }
+
+            fetch('/stop_transcription')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    getFinalTranscript();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        function generatePDF() {
+            // Show loading overlay and popup
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('loadingPopup').style.display = 'block';
+
+            // Simulate PDF generation with a timeout
+            setTimeout(() => {
+                // Hide loading popup
+                document.getElementById('loadingPopup').style.display = 'none';
+                
+                // Show success popup
+                document.getElementById('successPopup').style.display = 'block';
+            }, 2000); // Simulated 2-second delay
+        }
+
+        function closeSuccessPopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('successPopup').style.display = 'none';
+        }
+
+        function getFinalTranscript() {
+            fetch('/get_final_transcript')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('finalTranscript').textContent = data.transcript;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
