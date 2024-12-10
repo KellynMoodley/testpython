@@ -48,6 +48,11 @@ def serve_index():
     # Serve the main index.html file
     return send_from_directory(current_dir, 'index.html')
 
+@app.route('/<path:filename>')
+def serve_files(filename):
+    # Serve other files (CSS, JS, etc.) dynamically
+    return send_from_directory(current_dir, filename)
+
 def send_transcript_to_webhook(transcript):
     """
     Send the transcript to the N8N webhook
