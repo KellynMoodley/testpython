@@ -167,10 +167,6 @@ def get_auth():
     apikey = "I9meB5ym-hSrrNCps6CvSyh_aFlDMNfj1k7497B7MeHf"
     return ("apikey", apikey)
 
-@app.route('/')
-def index():
-    return send_from_directory(app.static_folder, 'index.html')
-
 @app.route('/start_transcription')
 def start_transcription():
     global is_transcribing, final_transcript
