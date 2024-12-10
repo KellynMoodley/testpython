@@ -5,3 +5,4 @@ websocket-client==1.6.4
 requests==2.31.0
 wheel==0.41.2
 setuptools==68.0.0
+sounddevice==0.4.6
