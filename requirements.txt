@@ -3,6 +3,6 @@ gunicorn==21.2.0
 websocket-client==1.6.4
 requests==2.31.0
 wheel==0.41.2
-sounddevice==0.4.6
+pyaudio
 setuptools>=56.0.0
 pip>=21.0.0
