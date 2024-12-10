@@ -1,7 +1,7 @@
 {
-  "name": "hello-world-python-app",
+  "name": "herokupython",
   "description": "A basic Hello World Python app deployed on Heroku.",
-  "repository": "https://github.com/your-repo/hello-world-python",
+  "repository": "https://github.com/your-repo/testpython",
   "keywords": ["python", "flask", "hello-world"],
   "addons": []
 }
