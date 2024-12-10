@@ -15,7 +15,7 @@ from flask import Flask, render_template, Response, jsonify, send_from_directory
 import queue
 import ssl
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__)
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
@@ -39,6 +39,14 @@ REGION_MAP = {
 transcription_queue = queue.Queue()
 final_transcript = []
 is_transcribing = False
+
+# Get the current directory (where all files are located)
+current_dir = os.getcwd()
+
+@app.route('/')
+def serve_index():
+    # Serve the main index.html file
+    return send_from_directory(current_dir, 'index.html')
 
 def send_transcript_to_webhook(transcript):
     """
